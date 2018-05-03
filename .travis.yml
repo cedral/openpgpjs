@@ -22,21 +22,17 @@ matrix:
     - node_js: "8"
       env: BROWSER='Chrome 59' OPENPGPJSTEST='end2end-3' ALLOW_FAILURE=1
     - node_js: "8"
-      env: BROWSER='Internet Explorer 11' OPENPGPJSTEST='end2end-4' ALLOW_FAILURE=1
+      env: BROWSER='Safari 8' OPENPGPJSTEST='end2end-4' ALLOW_FAILURE=1
     - node_js: "8"
-      env: BROWSER='Microsoft Edge 15' OPENPGPJSTEST='end2end-5' ALLOW_FAILURE=1
+      env: BROWSER='Safari 10' OPENPGPJSTEST='end2end-5' ALLOW_FAILURE=1
     - node_js: "8"
-      env: BROWSER='Safari 8' OPENPGPJSTEST='end2end-6' ALLOW_FAILURE=1
+      env: BROWSER='Android 6.0' OPENPGPJSTEST='end2end-6' ALLOW_FAILURE=1
     - node_js: "8"
-      env: BROWSER='Safari 10' OPENPGPJSTEST='end2end-7' ALLOW_FAILURE=1
+      env: BROWSER='iOS 9.3' OPENPGPJSTEST='end2end-7' ALLOW_FAILURE=1
     - node_js: "8"
-      env: BROWSER='Android 4.4' OPENPGPJSTEST='end2end-8' ALLOW_FAILURE=1
+      env: BROWSER='iOS 11.0' OPENPGPJSTEST='end2end-8' ALLOW_FAILURE=1
     - node_js: "8"
-      env: BROWSER='Android 6.0' OPENPGPJSTEST='end2end-9' ALLOW_FAILURE=1
-    - node_js: "8"
-      env: BROWSER='iOS 9.3' OPENPGPJSTEST='end2end-10' ALLOW_FAILURE=1
-    - node_js: "8"
-      env: BROWSER='iOS 11.0' OPENPGPJSTEST='end2end-11' ALLOW_FAILURE=1
+      env: BROWSER='Microsoft Edge 15' OPENPGPJSTEST='end2end-9' ALLOW_FAILURE=1
   allow_failures:
     - env: ALLOW_FAILURE=1
 
