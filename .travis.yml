@@ -13,28 +13,28 @@ matrix:
       env: OPENPGP_NODE_JS='8' OPENPGPJSTEST='unit'
     - node_js: "9"
       env: OPENPGP_NODE_JS='9' OPENPGPJSTEST='unit'
-    - node_js: "8"
-      env: BROWSER='Firefox 34' OPENPGPJSTEST='end2end-0' ALLOW_FAILURE=1
-    - node_js: "8"
-      env: BROWSER='Firefox 54' OPENPGPJSTEST='end2end-1' ALLOW_FAILURE=1
-    - node_js: "8"
-      env: BROWSER='Chrome 41' OPENPGPJSTEST='end2end-2' ALLOW_FAILURE=1
-    - node_js: "8"
-      env: BROWSER='Chrome 59' OPENPGPJSTEST='end2end-3' ALLOW_FAILURE=1
-    - node_js: "8"
-      env: BROWSER='Safari 8' OPENPGPJSTEST='end2end-4' ALLOW_FAILURE=1
-    - node_js: "8"
-      env: BROWSER='Safari 10' OPENPGPJSTEST='end2end-5' ALLOW_FAILURE=1
-    - node_js: "8"
-      env: BROWSER='Android 6.0' OPENPGPJSTEST='end2end-6' ALLOW_FAILURE=1
-    - node_js: "8"
-      env: BROWSER='iOS 9.3' OPENPGPJSTEST='end2end-7' ALLOW_FAILURE=1
-    - node_js: "8"
-      env: BROWSER='iOS 11.0' OPENPGPJSTEST='end2end-8' ALLOW_FAILURE=1
-    - node_js: "8"
-      env: BROWSER='Microsoft Edge 15' OPENPGPJSTEST='end2end-9' ALLOW_FAILURE=1
+    - node_js: "10.0"
+      env: BROWSER='Firefox 34' OPENPGPJSTEST='end2end-0'
+    - node_js: "10.0"
+      env: BROWSER='Firefox 54' OPENPGPJSTEST='end2end-1'
+    - node_js: "10.0"
+      env: BROWSER='Chrome 41' OPENPGPJSTEST='end2end-2'
+    - node_js: "10.0"
+      env: BROWSER='Chrome 59' OPENPGPJSTEST='end2end-3'
+    - node_js: "10.0"
+      env: BROWSER='Safari 8' OPENPGPJSTEST='end2end-4'
+    - node_js: "10.0"
+      env: BROWSER='Safari 10' OPENPGPJSTEST='end2end-5'
+    - node_js: "10.0"
+      env: BROWSER='Android 6.0' OPENPGPJSTEST='end2end-6'
+    - node_js: "10.0"
+      env: BROWSER='iOS 9.3' OPENPGPJSTEST='end2end-7'
+    - node_js: "10.0"
+      env: BROWSER='iOS 11.0' OPENPGPJSTEST='end2end-8'
+    - node_js: "10.0"
+      env: BROWSER='Microsoft Edge 15' OPENPGPJSTEST='end2end-9'
   allow_failures:
-    - env: ALLOW_FAILURE=1
+    - node_js: "10.0"
 
 before_script:
   - npm install -g grunt-cli codeclimate-test-reporter
