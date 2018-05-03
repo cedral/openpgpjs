@@ -10,9 +10,11 @@ matrix:
   fast_finish: true
   include:
     - node_js: "8"
-      env: OPENPGP_NODE_JS='8' OPENPGPJSTEST='unit'
+      env: NODE_JS='8' OPENPGPJSTEST='unit'
     - node_js: "9"
-      env: OPENPGP_NODE_JS='9' OPENPGPJSTEST='unit'
+      env: NODE_JS='9' OPENPGPJSTEST='unit'
+    - node_js: "10"
+      env: NODE_JS='10' OPENPGPJSTEST='unit'
     - node_js: "10.0"
       env: BROWSER='Firefox 34' OPENPGPJSTEST='end2end-0'
     - node_js: "10.0"
