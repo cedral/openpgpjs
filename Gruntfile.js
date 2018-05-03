@@ -228,7 +228,7 @@ module.exports = function(grunt) {
           browsers: [browser_capabilities],
           public: "public",
           maxRetries: 3,
-          throttled: 2,
+          throttled: 4,
           pollInterval: 10000,
           sauceConfig: {maxDuration: 1800, commandTimeout: 600, idleTimeout: 1000},
           statusCheckAttempts: 200
