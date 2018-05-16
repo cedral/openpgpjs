@@ -262,14 +262,14 @@ export function encrypt({ data, dataType, publicKeys, privateKeys, passwords, se
     return message.encrypt(publicKeys, passwords, sessionKey, wildcard, date, toUserId);
 
   }).then(async encrypted => {
-    let message = encrypted.message;
     if (armor) {
-      message = message.armor();
+      result.data = encrypted.message.armor();
+      if (!util.isStream(data)) {
+        result.data = await stream.readToEnd(result.data);
+      }
+    } else {
+      result.message = encrypted.message;
     }
-    if (util.isStream(message) && !util.isStream(data)) {
-      message = await stream.readToEnd(message);
-    }
-    result[armor ? 'data' : 'message'] = message;
     if (returnSessionKey) {
       result.sessionKey = encrypted.sessionKey;
     }
@@ -358,6 +358,9 @@ export function sign({ data, dataType, privateKeys, armor=true, detached=false, 
       message = await message.sign(privateKeys, undefined, date, fromUserId);
       if (armor) {
         result.data = message.armor();
+        if (!util.isStream(data)) {
+          result.data = await stream.readToEnd(result.data);
+        }
       } else {
         result.message = message;
       }
