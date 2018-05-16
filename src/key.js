@@ -289,7 +289,6 @@ Key.prototype.getSigningKeyPacket = async function (keyId=null, date=new Date(),
   if (await this.verifyPrimaryKey(date, userId) === enums.keyStatus.valid) {
     for (let i = 0; i < this.subKeys.length; i++) {
       if (!keyId || this.subKeys[i].subKey.getKeyId().equals(keyId)) {
-        // eslint-disable-next-line no-await-in-loop
         if (await this.subKeys[i].verify(primaryKey, date) === enums.keyStatus.valid) {
           const bindingSignature = getLatestSignature(this.subKeys[i].bindingSignatures, date);
           if (isValidSigningKeyPacket(this.subKeys[i].subKey, bindingSignature, date)) {
@@ -337,7 +336,6 @@ Key.prototype.getEncryptionKeyPacket = async function(keyId, date=new Date(), us
     // V3: keys MUST NOT have subkeys
     for (let i = 0; i < this.subKeys.length; i++) {
       if (!keyId || this.subKeys[i].subKey.getKeyId().equals(keyId)) {
-        // eslint-disable-next-line no-await-in-loop
         if (await this.subKeys[i].verify(primaryKey, date) === enums.keyStatus.valid) {
           const bindingSignature = getLatestSignature(this.subKeys[i].bindingSignatures, date);
           if (isValidEncryptionKeyPacket(this.subKeys[i].subKey, bindingSignature, date)) {
@@ -517,11 +515,9 @@ Key.prototype.getPrimaryUser = async function(date=new Date(), userId={}) {
   const { primaryKey } = this;
   const dataToVerify = { userid: user.userId , key: primaryKey };
   // skip if certificates is invalid, revoked, or expired
-  // eslint-disable-next-line no-await-in-loop
   if (!(cert.verified || await cert.verify(primaryKey, dataToVerify))) {
     return null;
   }
-  // eslint-disable-next-line no-await-in-loop
   if (cert.revoked || await user.isRevoked(primaryKey, cert, null, date)) {
     return null;
   }
