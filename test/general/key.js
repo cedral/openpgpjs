@@ -190,7 +190,7 @@ function tests() {
       'BIDZSFjrJY/gm2kgQX2Pn9hGqDdGhxiALjxhA0+OJQNw4v11y0zVGdofh0IHjkcZ',
       'onCOcv4DKguN2w==',
       '=OqO3',
-      '-----END PGP PUBLIC KEY BLOCK----'].join('\n');
+      '-----END PGP PUBLIC KEY BLOCK-----'].join('\n');
 
   const pub_v3 =
       ['-----BEGIN PGP PUBLIC KEY BLOCK-----',
@@ -1273,9 +1273,9 @@ p92yZgB3r2+f6/GIe2+7
     };
     const opt = {numBits: 512, userIds: 'test <a@b.com>', passphrase: 'hello'};
     if (openpgp.util.getWebCryptoAll()) { opt.numBits = 2048; } // webkit webcrypto accepts minimum 2048 bit keys
-    return openpgp.generateKey(opt).then(function(key) {
+    return openpgp.generateKey(opt).then(async function(key) {
       testPref(key.key);
-      testPref(openpgp.key.readArmored(key.publicKeyArmored).keys[0]);
+      testPref((await openpgp.key.readArmored(key.publicKeyArmored)).keys[0]);
     });
   });
 
@@ -1401,8 +1401,8 @@ p92yZgB3r2+f6/GIe2+7
     const opt = {numBits: 512, userIds: userId, passphrase: 'passphrase'};
     if (openpgp.util.getWebCryptoAll()) { opt.numBits = 2048; } // webkit webcrypto accepts minimum 2048 bit keys
     const key = (await openpgp.generateKey(opt)).key;
-    const armor1 = key.armor();
-    const armor2 = key.armor();
+    const armor1 = await openpgp.stream.readToEnd(key.armor());
+    const armor2 = await openpgp.stream.readToEnd(key.armor());
     expect(armor1).to.equal(armor2);
     expect(await key.decrypt('passphrase')).to.be.true;
     expect(key.primaryKey.isDecrypted).to.be.true;
@@ -1412,7 +1412,7 @@ p92yZgB3r2+f6/GIe2+7
     expect(key.primaryKey.isDecrypted).to.be.false;
     expect(await key.decrypt('new_passphrase')).to.be.true;
     expect(key.primaryKey.isDecrypted).to.be.true;
-    const armor3 = key.armor();
+    const armor3 = await openpgp.stream.readToEnd(key.armor());
     expect(armor3).to.not.equal(armor1);
   });
 
