@@ -354,7 +354,7 @@ function armor(messagetype, body, partindex, parttotal) {
       break;
   }
 
-  return stream.concat(result);
+  return util.concat(result);
 }
 
 export default {
