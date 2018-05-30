@@ -1793,14 +1793,13 @@ describe('OpenPGP.js public api tests', function() {
                 const literals = packets.packets.filterByTag(openpgp.enums.packet.literal);
                 expect(literals.length).to.equal(1);
                 expect(+literals[0].date).to.equal(+past);
-                expect(await openpgp.stream.readToEnd(packets.getText())).to.equal(plaintext);
-                return packets.verify(encryptOpt.publicKeys, past);
-            }).then(function (signatures) {
+                const signatures = await packets.verify(encryptOpt.publicKeys, past);
                 expect(+signatures[0].signature.packets[0].created).to.equal(+past);
                 expect(signatures[0].valid).to.be.true;
                 expect(encryptOpt.privateKeys[0].getSigningKeyPacket(signatures[0].keyid, past))
                     .to.be.not.null;
                 expect(signatures[0].signature.packets.length).to.equal(1);
+                expect(await openpgp.stream.readToEnd(packets.getText())).to.equal(plaintext);
             });
         });
 
@@ -1822,14 +1821,13 @@ describe('OpenPGP.js public api tests', function() {
                 expect(literals.length).to.equal(1);
                 expect(literals[0].format).to.equal('binary');
                 expect(+literals[0].date).to.equal(+future);
-                expect(await openpgp.stream.readToEnd(packets.getLiteralData())).to.deep.equal(data);
-                return packets.verify(encryptOpt.publicKeys, future);
-            }).then(function (signatures) {
+                const signatures = await packets.verify(encryptOpt.publicKeys, future);
                 expect(+signatures[0].signature.packets[0].created).to.equal(+future);
                 expect(signatures[0].valid).to.be.true;
                 expect(encryptOpt.privateKeys[0].getSigningKeyPacket(signatures[0].keyid, future))
                     .to.be.not.null;
                 expect(signatures[0].signature.packets.length).to.equal(1);
+                expect(await openpgp.stream.readToEnd(packets.getLiteralData())).to.deep.equal(data);
             });
         });
 
@@ -1852,14 +1850,13 @@ describe('OpenPGP.js public api tests', function() {
                 expect(literals.length).to.equal(1);
                 expect(literals[0].format).to.equal('mime');
                 expect(+literals[0].date).to.equal(+future);
-                expect(await openpgp.stream.readToEnd(packets.getLiteralData())).to.deep.equal(data);
-                return packets.verify(encryptOpt.publicKeys, future);
-            }).then(function (signatures) {
+                const signatures = await packets.verify(encryptOpt.publicKeys, future);
                 expect(+signatures[0].signature.packets[0].created).to.equal(+future);
                 expect(signatures[0].valid).to.be.true;
                 expect(encryptOpt.privateKeys[0].getSigningKeyPacket(signatures[0].keyid, future))
                     .to.be.not.null;
                 expect(signatures[0].signature.packets.length).to.equal(1);
+                expect(await openpgp.stream.readToEnd(packets.getLiteralData())).to.deep.equal(data);
             });
         });
       });
