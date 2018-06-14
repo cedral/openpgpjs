@@ -150,7 +150,7 @@ function packetlistCloneToSignatures(clone) {
 }
 
 function packetlistCloneToSignature(clone) {
-  if (util.isString(clone)) {
+  if (util.isString(clone) || util.isStream(clone)) {
     //signature is armored
     return clone;
   }
