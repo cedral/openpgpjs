@@ -333,7 +333,6 @@ Key.prototype.getEncryptionKeyPacket = async function(keyId, date=new Date(), us
   const primaryKey = this.primaryKey;
   if (await this.verifyPrimaryKey(date, userId) === enums.keyStatus.valid) {
     // V4: by convention subkeys are preferred for encryption service
-    // V3: keys MUST NOT have subkeys
     for (let i = 0; i < this.subKeys.length; i++) {
       if (!keyId || this.subKeys[i].subKey.getKeyId().equals(keyId)) {
         if (await this.subKeys[i].verify(primaryKey, date) === enums.keyStatus.valid) {
@@ -466,16 +465,11 @@ Key.prototype.verifyPrimaryKey = async function(date=new Date(), userId={}) {
  * @async
  */
 Key.prototype.getExpirationTime = async function() {
-  if (this.primaryKey.version === 3) {
-    return getExpirationTime(this.primaryKey);
-  }
-  if (this.primaryKey.version >= 4) {
-    const primaryUser = await this.getPrimaryUser(null);
-    const selfCert = primaryUser.selfCertification;
-    const keyExpiry = getExpirationTime(this.primaryKey, selfCert);
-    const sigExpiry = selfCert.getExpirationTime();
-    return keyExpiry < sigExpiry ? keyExpiry : sigExpiry;
-  }
+  const primaryUser = await this.getPrimaryUser(null);
+  const selfCert = primaryUser.selfCertification;
+  const keyExpiry = getExpirationTime(this.primaryKey, selfCert);
+  const sigExpiry = selfCert.getExpirationTime();
+  return keyExpiry < sigExpiry ? keyExpiry : sigExpiry;
 };
 
 /**
@@ -956,10 +950,6 @@ SubKey.prototype.isRevoked = async function(primaryKey, signature, key, date=new
 SubKey.prototype.verify = async function(primaryKey, date=new Date()) {
   const that = this;
   const dataToVerify = { key: primaryKey, bind: this.subKey };
-  // check for V3 expiration time
-  if (this.subKey.version === 3 && isDataExpired(this.subKey, null, date)) {
-    return enums.keyStatus.expired;
-  }
   // check subkey binding signatures
   const bindingSignature = getLatestSignature(this.bindingSignatures, date);
   // check binding signature is verified
@@ -1397,12 +1387,8 @@ function isDataExpired(keyPacket, signature, date=new Date()) {
 
 function getExpirationTime(keyPacket, signature) {
   let expirationTime;
-  // check V3 expiration time
-  if (keyPacket.version === 3 && keyPacket.expirationTimeV3 !== 0) {
-    expirationTime = keyPacket.created.getTime() + keyPacket.expirationTimeV3*24*3600*1000;
-  }
   // check V4 expiration time
-  if (keyPacket.version >= 4 && signature.keyNeverExpires === false) {
+  if (signature.keyNeverExpires === false) {
     expirationTime = keyPacket.created.getTime() + signature.keyExpirationTime*1000;
   }
   return expirationTime ? new Date(expirationTime) : Infinity;
