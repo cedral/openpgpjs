@@ -183,7 +183,7 @@ describe('Elliptic Curve Cryptography', function () {
   });
   it('Sign message', async function () {
     const romeoPrivate = await load_priv_key('romeo');
-    const signed = await openpgp.sign({privateKeys: [romeoPrivate], data: data.romeo.message + "\n"});
+    const signed = await openpgp.sign({privateKeys: [romeoPrivate], message: new openpgp.cleartext.CleartextMessage(data.romeo.message + "\n")});
     const romeoPublic = await load_pub_key('romeo');
     const msg = await openpgp.cleartext.readArmored(signed.data);
     const result = await openpgp.verify({publicKeys: [romeoPublic], message: msg});
@@ -208,7 +208,7 @@ describe('Elliptic Curve Cryptography', function () {
   it('Encrypt and sign message', async function () {
     const romeoPrivate = await load_priv_key('romeo');
     const julietPublic = await load_pub_key('juliet');
-    const encrypted = await openpgp.encrypt({publicKeys: [julietPublic], privateKeys: [romeoPrivate], data: data.romeo.message + "\n"});
+    const encrypted = await openpgp.encrypt({publicKeys: [julietPublic], privateKeys: [romeoPrivate], message: openpgp.message.fromText(data.romeo.message + "\n")});
 
     const message = await openpgp.message.readArmored(encrypted.data);
     const romeoPublic = await load_pub_key('romeo');
@@ -253,7 +253,7 @@ describe('Elliptic Curve Cryptography', function () {
             // Signing message
 
             openpgp.sign(
-              { data: testData, privateKeys: hi }
+              { message: new openpgp.cleartext.CleartextMessage(testData), privateKeys: hi }
             ).then(async signed => {
               const msg = await openpgp.cleartext.readArmored(signed.data);
               // Verifying signed message
@@ -263,7 +263,7 @@ describe('Elliptic Curve Cryptography', function () {
                 ).then(output => expect(output.signatures[0].valid).to.be.true),
                 // Verifying detached signature
                 openpgp.verify(
-                  { message: openpgp.message.fromText(testData),
+                  { message: new openpgp.cleartext.CleartextMessage(testData),
                     publicKeys: pubHi,
                     signature: await openpgp.signature.readArmored(signed.data) }
                 ).then(output => expect(output.signatures[0].valid).to.be.true)
@@ -271,7 +271,7 @@ describe('Elliptic Curve Cryptography', function () {
             }),
             // Encrypting and signing
             openpgp.encrypt(
-              { data: testData2,
+              { message: openpgp.message.fromText(testData2),
                 publicKeys: [pubBye],
                 privateKeys: [hi] }
             ).then(async encrypted => {
