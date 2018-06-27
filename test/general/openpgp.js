@@ -287,7 +287,7 @@ DECl1Qu4QyeXin29uEXWiekMpNlZVsEuc8icCw6ABhIZ
 -----END PGP PRIVATE KEY BLOCK-----`;
 
 const passphrase = 'hello world';
-const plaintext = input.createSomeMessage() + '\n한국어/조선말';
+const plaintext = '  \t' + input.createSomeMessage() + '  \t\n한국어/조선말';
 const password1 = 'I am a password';
 const password2 = 'I am another password';
 const password3 = 'I am a third password';
@@ -1515,7 +1515,7 @@ describe('OpenPGP.js public api tests', function() {
             verifyOpt.message = await openpgp.cleartext.readArmored(signed.data);
             return openpgp.verify(verifyOpt);
           }).then(async function (verified) {
-            expect(verified.data).to.equal(plaintext);
+            expect(verified.data).to.equal(openpgp.util.removeTrailingSpaces(plaintext));
             expect(verified.signatures[0].valid).to.be.true;
             const keyPacket = await privateKey.keys[0].getSigningKeyPacket();
             expect(verified.signatures[0].keyid.toHex()).to.equal(keyPacket.getKeyId().toHex());
@@ -1540,7 +1540,7 @@ describe('OpenPGP.js public api tests', function() {
             return openpgp.verify(verifyOpt);
           }).then(async function (verified) {
             let keyPacket;
-            expect(verified.data).to.equal(plaintext);
+            expect(verified.data).to.equal(openpgp.util.removeTrailingSpaces(plaintext));
             expect(verified.signatures[0].valid).to.be.true;
             keyPacket = await privateKey.keys[0].getSigningKeyPacket();
             expect(verified.signatures[0].keyid.toHex()).to.equal(keyPacket.getKeyId().toHex());
@@ -1566,7 +1566,7 @@ describe('OpenPGP.js public api tests', function() {
             verifyOpt.signature = await openpgp.signature.readArmored(signed.signature);
             return openpgp.verify(verifyOpt);
           }).then(async function (verified) {
-            expect(verified.data).to.equal(plaintext);
+            expect(verified.data).to.equal(openpgp.util.removeTrailingSpaces(plaintext));
             expect(verified.signatures[0].valid).to.be.true;
             const keyPacket = await privateKey.keys[0].getSigningKeyPacket();
             expect(verified.signatures[0].keyid.toHex()).to.equal(keyPacket.getKeyId().toHex());
@@ -1586,7 +1586,7 @@ describe('OpenPGP.js public api tests', function() {
             verifyOpt.message = await openpgp.cleartext.readArmored(signed.data);
             return openpgp.verify(verifyOpt);
           }).then(async function (verified) {
-            expect(verified.data).to.equal(plaintext);
+            expect(verified.data).to.equal(openpgp.util.removeTrailingSpaces(plaintext));
             expect(verified.signatures[0].valid).to.be.null;
             const keyPacket = await privateKey.keys[0].getSigningKeyPacket();
             expect(verified.signatures[0].keyid.toHex()).to.equal(keyPacket.getKeyId().toHex());
@@ -1608,7 +1608,7 @@ describe('OpenPGP.js public api tests', function() {
             verifyOpt.signature = await openpgp.signature.readArmored(signed.signature);
             return openpgp.verify(verifyOpt);
           }).then(async function (verified) {
-            expect(verified.data).to.equal(plaintext);
+            expect(verified.data).to.equal(openpgp.util.removeTrailingSpaces(plaintext));
             expect(verified.signatures[0].valid).to.be.null;
             const keyPacket = await privateKey.keys[0].getSigningKeyPacket();
             expect(verified.signatures[0].keyid.toHex()).to.equal(keyPacket.getKeyId().toHex());
@@ -1629,7 +1629,7 @@ describe('OpenPGP.js public api tests', function() {
             verifyOpt.message = signed.message;
             return openpgp.verify(verifyOpt);
           }).then(async function (verified) {
-            expect(verified.data).to.equal(plaintext);
+            expect(verified.data).to.equal(openpgp.util.removeTrailingSpaces(plaintext));
             expect(verified.signatures[0].valid).to.be.true;
             const keyPacket = await privateKey.keys[0].getSigningKeyPacket();
             expect(verified.signatures[0].keyid.toHex()).to.equal(keyPacket.getKeyId().toHex());
@@ -1653,7 +1653,7 @@ describe('OpenPGP.js public api tests', function() {
                 verifyOpt.signature = signed.signature;
                 return openpgp.verify(verifyOpt);
             }).then(async function (verified) {
-                expect(verified.data).to.equal(plaintext);
+                expect(verified.data).to.equal(openpgp.util.removeTrailingSpaces(plaintext));
                 expect(+verified.signatures[0].signature.packets[0].created).to.be.lte(+openpgp.util.normalizeDate());
                 expect(+verified.signatures[0].signature.packets[0].created).to.be.gte(+start);
                 expect(verified.signatures[0].valid).to.be.true;
@@ -1680,7 +1680,7 @@ describe('OpenPGP.js public api tests', function() {
                 verifyOpt.signature = await openpgp.signature.readArmored(signed.signature);
                 return openpgp.verify(verifyOpt).then(function (verified) {
                   expect(+verified.signatures[0].signature.packets[0].created).to.equal(+past);
-                  expect(verified.data).to.equal(plaintext);
+                  expect(verified.data).to.equal(openpgp.util.removeTrailingSpaces(plaintext));
                   expect(verified.signatures[0].valid).to.be.true;
                   expect(signOpt.privateKeys[0].getSigningKeyPacket(verified.signatures[0].keyid, past))
                       .to.be.not.null;
@@ -1690,7 +1690,7 @@ describe('OpenPGP.js public api tests', function() {
                   return openpgp.verify(verifyOpt);
                 }).then(function (verified) {
                   expect(+verified.signatures[0].signature.packets[0].created).to.equal(+past);
-                  expect(verified.data).to.equal(plaintext);
+                  expect(verified.data).to.equal(openpgp.util.removeTrailingSpaces(plaintext));
                   expect(verified.signatures[0].valid).to.be.true;
                   expect(signOpt.privateKeys[0].getSigningKeyPacket(verified.signatures[0].keyid, null))
                       .to.be.not.null;
