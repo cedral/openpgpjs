@@ -1361,8 +1361,8 @@ p92yZgB3r2+f6/GIe2+7
     const opt = {numBits: 512, userIds: userId, passphrase: 'passphrase'};
     if (openpgp.util.getWebCryptoAll()) { opt.numBits = 2048; } // webkit webcrypto accepts minimum 2048 bit keys
     const key = (await openpgp.generateKey(opt)).key;
-    const armor1 = await openpgp.stream.readToEnd(key.armor());
-    const armor2 = await openpgp.stream.readToEnd(key.armor());
+    const armor1 = key.armor();
+    const armor2 = key.armor();
     expect(armor1).to.equal(armor2);
     expect(await key.decrypt('passphrase')).to.be.true;
     expect(key.primaryKey.isDecrypted).to.be.true;
@@ -1372,7 +1372,7 @@ p92yZgB3r2+f6/GIe2+7
     expect(key.primaryKey.isDecrypted).to.be.false;
     expect(await key.decrypt('new_passphrase')).to.be.true;
     expect(key.primaryKey.isDecrypted).to.be.true;
-    const armor3 = await openpgp.stream.readToEnd(key.armor());
+    const armor3 = key.armor();
     expect(armor3).to.not.equal(armor1);
   });
 

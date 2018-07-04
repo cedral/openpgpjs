@@ -123,11 +123,11 @@ export function generateKey({ userIds=[], passphrase="", numBits=2048, keyExpira
     return asyncProxy.delegate('generateKey', options);
   }
 
-  return generate(options).then(async key => ({
+  return generate(options).then(key => convertStreams({
 
     key: key,
-    privateKeyArmored: await convertStream(key.armor()),
-    publicKeyArmored: await convertStream(key.toPublic().armor())
+    privateKeyArmored: key.armor(),
+    publicKeyArmored: key.toPublic().armor()
 
   })).catch(onError.bind(null, 'Error generating keypair'));
 }
@@ -247,7 +247,7 @@ export function encrypt({ message, publicKeys, privateKeys, passwords, sessionKe
     if (privateKeys.length || signature) { // sign the message only if private keys or signature is specified
       if (detached) {
         const detachedSignature = await message.signDetached(privateKeys, signature, date, fromUserId);
-        result.signature = armor ? await convertStream(detachedSignature.armor(), asStream) : detachedSignature;
+        result.signature = armor ? detachedSignature.armor() : detachedSignature;
       } else {
         message = await message.sign(privateKeys, signature, date, fromUserId);
       }
@@ -258,14 +258,13 @@ export function encrypt({ message, publicKeys, privateKeys, passwords, sessionKe
   }).then(async encrypted => {
     if (armor) {
       result.data = encrypted.message.armor();
-      result.data = await convertStream(result.data, asStream);
     } else {
       result.message = encrypted.message;
     }
     if (returnSessionKey) {
       result.sessionKey = encrypted.sessionKey;
     }
-    return result;
+    return convertStreams(result, asStream, ['data']);
   }).catch(onError.bind(null, 'Error encrypting message'));
 }
 
@@ -363,17 +362,16 @@ export function sign({ message, privateKeys, armor=true, asStream=message&&messa
   return Promise.resolve().then(async function() {
     if (detached) {
       const signature = await message.signDetached(privateKeys, undefined, date, fromUserId);
-      result.signature = armor ? await convertStream(signature.armor(), asStream) : signature;
+      result.signature = armor ? signature.armor() : signature;
     } else {
       message = await message.sign(privateKeys, undefined, date, fromUserId);
       if (armor) {
         result.data = message.armor();
-        result.data = await convertStream(result.data, asStream);
       } else {
         result.message = message;
       }
     }
-    return result;
+    return convertStreams(result, asStream, armor ? ['signature', 'data'] : []);
   }).catch(onError.bind(null, 'Error signing cleartext message'));
 }
 
@@ -534,9 +532,9 @@ function toArray(param) {
 
 /**
  * Convert data to or from Stream
- * @param  {Object} data       the data to convert
- * @param  {Boolean} asStream  whether to return a ReadableStream
- * @returns {Object}            the parse data in the respective format
+ * @param  {Object} data        the data to convert
+ * @param  {Boolean} asStream   (optional) whether to return a ReadableStream
+ * @returns {Object}            the data in the respective format
  */
 async function convertStream(data, asStream) {
   if (!asStream && util.isStream(data)) {
@@ -551,6 +549,26 @@ async function convertStream(data, asStream) {
     });
   }
   return data;
+}
+
+/**
+ * Convert object properties from Stream
+ * @param  {Object} obj         the data to convert
+ * @param  {Boolean} asStream   (optional) whether to return ReadableStreams
+ * @param  {Boolean} keys       (optional) which keys to return as streams, if possible
+ * @returns {Object}            the data in the respective format
+ */
+async function convertStreams(obj, asStream, keys=[]) {
+  if (Object.prototype.isPrototypeOf(obj)) {
+    await Promise.all(Object.entries(obj).map(async ([key, value]) => { // recursively search all children
+      if (util.isStream(value) || keys.includes(key)) {
+        obj[key] = await convertStream(value, asStream);
+      } else {
+        await convertStreams(obj[key], asStream);
+      }
+    }));
+  }
+  return obj;
 }
 
 
