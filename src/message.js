@@ -675,7 +675,7 @@ Message.prototype.appendSignature = async function(detachedSignature) {
 
 /**
  * Returns ASCII armored text of message
- * @returns {String} ASCII armor
+ * @returns {ReadableStream<String>} ASCII armor
  */
 Message.prototype.armor = function() {
   return armor.encode(enums.armor.message, this.packets.write());
@@ -683,8 +683,9 @@ Message.prototype.armor = function() {
 
 /**
  * reads an OpenPGP armored message and returns a message object
- * @param {String} armoredText text to be parsed
+ * @param {String | ReadableStream<String>} armoredText text to be parsed
  * @returns {module:message.Message} new message object
+ * @async
  * @static
  */
 export async function readArmored(armoredText) {
@@ -696,9 +697,10 @@ export async function readArmored(armoredText) {
 
 /**
  * reads an OpenPGP message as byte array and returns a message object
- * @param {Uint8Array} input    binary message
+ * @param {Uint8Array | ReadableStream<Uint8Array>} input    binary message
  * @param {Boolean} fromStream  whether the message was created from a Stream
- * @returns {Message}           new message object
+ * @returns {module:message.Message} new message object
+ * @async
  * @static
  */
 async function read(input, fromStream) {
@@ -711,7 +713,7 @@ async function read(input, fromStream) {
 
 /**
  * creates new message object from text
- * @param {String} text
+ * @param {String | ReadableStream<String>} text
  * @param {String} filename (optional)
  * @param {Date} date (optional)
  * @param {utf8|binary|text|mime} type (optional) data packet type
@@ -734,7 +736,7 @@ export function fromText(text, filename, date=new Date(), type='utf8') {
 
 /**
  * creates new message object from binary data
- * @param {Uint8Array} bytes
+ * @param {Uint8Array | ReadableStream<Uint8Array>} bytes
  * @param {String} filename (optional)
  * @param {Date} date (optional)
  * @param {utf8|binary|text|mime} type (optional) data packet type
