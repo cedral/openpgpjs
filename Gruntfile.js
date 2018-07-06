@@ -37,7 +37,14 @@ module.exports = function(grunt) {
                         "transform-regenerator",
                         "transform-runtime"],
               ignore: ['*.min.js'],
-              presets: ["env"]
+              presets: ["env", 
+                       { "targets": {
+                         "browsers":
+                          ["edge >= 16",
+                           "chrome >= 63",
+                           "firefox >= 52",
+                           "safari >= 11"]
+             }}]
             }]
           ],
           plugin: ['browserify-derequire']
@@ -66,7 +73,14 @@ module.exports = function(grunt) {
                         "transform-regenerator",
                         "transform-runtime"],
               ignore: ['*.min.js'],
-              presets: ["env"]
+              presets: ["env", 
+                       { "targets": {
+                         "browsers":
+                          ["edge >= 16",
+                           "chrome >= 63",
+                           "firefox >= 52",
+                           "safari >= 11"]
+             }}]
             }]
           ],
           plugin: ['browserify-derequire']
@@ -98,7 +112,14 @@ module.exports = function(grunt) {
                         "transform-runtime",
                         "transform-remove-strict-mode"],
               ignore: ['*.min.js'],
-              presets: ["env"]
+              presets: ["env", 
+                       { "targets": {
+                         "browsers":
+                          [ "edge >= 16",
+                            "chrome >= 63",
+                            "firefox >= 52",
+                            "safari >= 11"]
+             }}]
             }]
           ]
         }
